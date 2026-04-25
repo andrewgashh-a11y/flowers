@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PETAL — Цветочная студия · Санкт-Петербург</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Raleway:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sage:   #8fa67e;
+      --sage-d: #6b8a5a;
+      --sage-p: #eef2ea;
+      --blush:  #e8c4b8;
+      --blush-d:#d4937e;
+      --ivory:  #faf8f4;
+      --ivory2: #f2ede4;
+      --ivory3: #e6ddd0;
+      --dark:   #1e1a16;
+      --mid:    #6b5e52;
+      --light:  #a89a8e;
+      --white:  #ffffff;
+      --serif:  'Libre Baskerville', Georgia, serif;
+      --sans:   'Raleway', sans-serif;
+      --ease:   cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--ivory); color:var(--dark); font-family:var(--sans); font-weight:300; overflow-x:hidden; }
+    img  { display:block; width:100%; height:100%; object-fit:cover; }
+    a    { text-decoration:none; }
+    ::-webkit-scrollbar { width:3px; }
+    ::-webkit-scrollbar-thumb { background:var(--blush-d); }
+
+    /* ── KEYFRAMES ─────────────────────────────── */
+    @keyframes fadeUp  { to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn  { to { opacity:1; } }
+    @keyframes float   { 0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)} }
+    @keyframes ticker  { to { transform:translateX(-50%); } }
+    @keyframes heroZoom{ to { transform:scale(1); } }
+
+    .reveal {
+      opacity:0; transform:translateY(32px);
+      transition:opacity .8s var(--ease), transform .8s var(--ease);
+    }
+    .reveal.on { opacity:1; transform:translateY(0); }
+    .rl { opacity:0; transform:translateX(-36px); transition:opacity .8s var(--ease), transform .8s var(--ease); }
+    .rr { opacity:0; transform:translateX( 36px); transition:opacity .8s var(--ease), transform .8s var(--ease); }
+    .rl.on,.rr.on { opacity:1; transform:translateX(0); }
+    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+    /* ── NAVBAR ──────────────────────────────────── */
+    .nav {
+      position:fixed; top:0; left:0; right:0; z-index:200;
+      padding:22px 64px;
+      display:flex; align-items:center; justify-content:space-between;
+      transition:.5s var(--ease);
+    }
+    .nav.solid {
+      padding:14px 64px;
+      background:rgba(250,248,244,.96);
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--ivory3);
+      box-shadow:0 2px 24px rgba(30,26,22,.05);
+    }
+    .nav-logo { font-family:var(--serif); font-size:22px; letter-spacing:6px; text-transform:uppercase; color:var(--dark); }
+    .nav-logo span { color:var(--sage-d); }
+    .nav-links { display:flex; gap:36px; list-style:none; }
+    .nav-links a { font-size:11px; font-weight:500; letter-spacing:3px; text-transform:uppercase; color:var(--mid); transition:color .4s; }
+    .nav-links a:hover { color:var(--sage-d); }
+    .nav-right { display:flex; gap:16px; align-items:center; }
+    .nav-tel  { font-size:13px; font-weight:500; color:var(--dark); transition:color .4s; }
+    .nav-tel:hover { color:var(--sage-d); }
+    .nav-btn  { font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--white); background:var(--sage-d); padding:10px 24px; border-radius:100px; transition:.4s; }
+    .nav-btn:hover { background:var(--sage); transform:translateY(-1px); }
+
+    .burger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; }
+    .burger span { display:block; width:26px; height:1.5px; background:var(--dark); transition:.4s; }
+    .mob { display:none; position:fixed; inset:0; z-index:199; background:var(--ivory); flex-direction:column; align-items:center; justify-content:center; gap:28px; }
+    .mob.open { display:flex; }
+    .mob a { font-family:var(--serif); font-size:32px; font-style:italic; color:var(--dark); transition:color .4s; }
+    .mob a:hover { color:var(--sage-d); }
+    .mob-x { position:absolute; top:20px; right:24px; background:none; border:none; font-size:28px; cursor:pointer; color:var(--dark); }
+
+    /* ── HERO ────────────────────────────────────── */
+    .hero { min-height:100vh; display:grid; grid-template-columns:55% 45%; overflow:hidden; }
+
+    .hero-img { position:relative; overflow:hidden; min-height:100vh; }
+    .hero-img img {
+      width:100%; height:100%; object-fit:cover;
+      transform:scale(1.06);
+      animation:heroZoom 8s var(--ease) forwards;
+    }
+    .hero-img::after {
+      content:'';
+      position:absolute; inset:0;
+      background:linear-gradient(90deg,transparent 60%,var(--ivory) 100%),
+                 linear-gradient(to top,rgba(30,26,22,.2) 0%,transparent 50%);
+    }
+
+    .hero-text {
+      display:flex; flex-direction:column; justify-content:center;
+      padding:120px 60px 80px 44px;
+      position:relative; z-index:2;
+    }
+    .hero-tag {
+      display:inline-flex; align-items:center; gap:10px; margin-bottom:36px;
+      opacity:0; animation:fadeUp .6s .4s forwards;
+    }
+    .hero-tag-line { width:28px; height:1px; background:var(--sage-d); }
+    .hero-tag span { font-size:10px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:var(--sage-d); }
+
+    .hero-h { font-family:var(--serif); font-size:clamp(42px,4.5vw,68px); font-weight:700; line-height:1.08; color:var(--dark); margin-bottom:6px; opacity:0; animation:fadeUp .7s .55s forwards; }
+    .hero-hi { font-family:var(--serif); font-size:clamp(42px,4.5vw,68px); font-weight:400; font-style:italic; line-height:1.08; color:var(--sage-d); margin-bottom:30px; display:block; opacity:0; animation:fadeUp .7s .7s forwards; }
+    .hero-p { font-size:15px; color:var(--mid); line-height:1.85; max-width:380px; margin-bottom:40px; opacity:0; animation:fadeUp .6s .85s forwards; }
+
+    .hero-btns { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:52px; opacity:0; animation:fadeUp .6s 1s forwards; }
+    .btn-sage  { font-size:12px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--white); background:var(--sage-d); padding:15px 36px; border-radius:100px; transition:.4s; display:inline-block; }
+    .btn-sage:hover  { background:var(--sage); transform:translateY(-2px); box-shadow:0 8px 24px rgba(107,138,90,.3); }
+    .btn-out  { font-size:12px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--sage-d); border:1.5px solid var(--sage-d); padding:14px 36px; border-radius:100px; transition:.4s; display:inline-flex; align-items:center; gap:8px; }
+    .btn-out:hover   { background:var(--sage-p); }
+
+    .hero-stats { display:flex; gap:36px; padding-top:28px; border-top:1px solid var(--ivory3); opacity:0; animation:fadeUp .6s 1.1s forwards; }
+    .hs-n { font-family:var(--serif); font-size:26px; font-weight:700; color:var(--sage-d); line-height:1; }
+    .hs-l { font-size:11px; color:var(--light); letter-spacing:1px; margin-top:4px; }
+
+    .hero-float {
+      position:absolute; bottom:56px; left:40px; z-index:10;
+      background:var(--white); border-radius:16px; padding:16px 20px;
+      box-shadow:0 16px 48px rgba(30,26,22,.12);
+      display:flex; gap:12px; align-items:center;
+      opacity:0; animation:fadeUp .7s 1.3s forwards;
+    }
+    .hero-float-icon { font-size:26px; }
+    .hero-float-t  { font-size:14px; font-weight:600; color:var(--dark); }
+    .hero-float-s  { font-size:12px; color:var(--light); }
+
+    /* ── TICKER ──────────────────────────────────── */
+    .ticker { background:var(--sage-d); overflow:hidden; padding:14px 0; }
+    .ticker-track { display:flex; white-space:nowrap; animation:ticker 24s linear infinite; }
+    .ticker-item { flex-shrink:0; padding:0 40px; font-family:var(--serif); font-size:16px; font-style:italic; color:rgba(255,255,255,.9); display:flex; align-items:center; gap:20px; }
+    .ticker-item::after { content:'✦'; font-style:normal; font-size:9px; opacity:.5; }
+
+    /* ── CAROUSEL ────────────────────────────────── */
+    .carousel-sec { padding:100px 0 100px 64px; background:var(--ivory); overflow:hidden; }
+    .carousel-top { display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:end; margin-bottom:60px; padding-right:64px; }
+    .car-title { font-family:var(--serif); font-size:clamp(38px,4vw,60px); font-weight:700; line-height:1.08; color:var(--dark); }
+    .car-title em { font-style:italic; color:var(--sage-d); display:block; }
+    .car-desc  { font-size:15px; color:var(--mid); line-height:1.8; }
+
+    /* nav arrows */
+    .car-controls { display:flex; gap:12px; margin-top:20px; }
+    .car-btn {
+      width:48px; height:48px; border-radius:50%;
+      border:1.5px solid var(--ivory3); background:var(--white);
+      display:flex; align-items:center; justify-content:center;
+      font-size:20px; color:var(--dark); cursor:pointer;
+      transition:.4s;
+    }
+    .car-btn:hover { background:var(--sage-d); color:var(--white); border-color:var(--sage-d); }
+
+    .car-track-wrap { overflow:hidden; }
+    .car-track {
+      display:flex; gap:20px;
+      transition:transform .6s var(--ease);
+      padding-right:64px;
+    }
+
+    .car-card {
+      flex-shrink:0;
+      width:280px;
+      background:var(--white);
+      border-radius:20px;
+      overflow:hidden;
+      transition:transform .4s var(--ease), box-shadow .4s;
+    }
+    .car-card:hover { transform:translateY(-6px); box-shadow:0 20px 56px rgba(30,26,22,.1); }
+
+    .car-img { height:340px; overflow:hidden; position:relative; }
+    .car-img img { transition:transform .7s var(--ease); }
+    .car-card:hover .car-img img { transform:scale(1.06); }
+
+    .car-badge {
+      position:absolute; top:14px; left:14px;
+      font-size:10px; font-weight:600; letter-spacing:2px; text-transform:uppercase;
+      color:var(--white); background:var(--sage-d);
+      padding:5px 12px; border-radius:100px;
+    }
+    .car-badge.pink  { background:var(--blush-d); }
+    .car-badge.dark  { background:var(--dark); }
+
+    .car-body  { padding:18px 20px 20px; }
+    .car-name  { font-family:var(--serif); font-size:18px; font-weight:700; margin-bottom:4px; color:var(--dark); }
+    .car-sub   { font-size:12px; color:var(--light); margin-bottom:12px; line-height:1.5; }
+    .car-foot  { display:flex; align-items:center; justify-content:space-between; }
+    .car-price { font-family:var(--serif); font-size:22px; font-weight:700; color:var(--sage-d); }
+    .car-price sup { font-size:13px; }
+    .car-order {
+      width:34px; height:34px; background:var(--sage-p); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      color:var(--sage-d); font-size:16px; transition:.4s;
+    }
+    .car-order:hover { background:var(--sage-d); color:var(--white); }
+
+    /* progress dots */
+    .car-dots { display:flex; gap:8px; margin-top:32px; padding-right:64px; }
+    .dot {
+      height:3px; background:var(--ivory3); border-radius:2px;
+      transition:.4s; cursor:pointer;
+    }
+    .dot.active { background:var(--sage-d); }
+
+    /* ── ABOUT ───────────────────────────────────── */
+    .about {
+      padding:100px 64px; background:var(--ivory2);
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:80px; align-items:center; position:relative; overflow:hidden;
+    }
+    .about::before {
+      content:'P'; position:absolute; right:-10px; top:50%; transform:translateY(-50%);
+      font-family:var(--serif); font-size:360px; font-weight:700; font-style:italic;
+      color:rgba(143,166,126,.05); line-height:1; pointer-events:none;
+    }
+
+    .about-imgs { position:relative; height:520px; }
+    .about-main { position:absolute; top:0; left:0; width:70%; height:78%; border-radius:20px; overflow:hidden; box-shadow:0 24px 64px rgba(30,26,22,.1); }
+    .about-sec  { position:absolute; bottom:0; right:0; width:55%; height:58%; border-radius:20px; overflow:hidden; border:6px solid var(--ivory2); box-shadow:0 16px 48px rgba(30,26,22,.09); }
+    .about-badge {
+      position:absolute; top:38%; left:56%; z-index:10;
+      background:var(--sage-d); border-radius:50%;
+      width:86px; height:86px;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      animation:float 4s ease-in-out infinite;
+      box-shadow:0 10px 30px rgba(107,138,90,.3);
+    }
+    .about-badge-n { font-family:var(--serif); font-size:26px; font-weight:700; color:var(--white); line-height:1; }
+    .about-badge-l { font-size:9px; color:rgba(255,255,255,.8); letter-spacing:1px; }
+
+    .eyebrow { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+    .eyebrow-line { width:24px; height:1px; background:var(--sage-d); }
+    .eyebrow span { font-size:10px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:var(--sage-d); }
+    .sec-h { font-family:var(--serif); font-size:clamp(30px,3.5vw,50px); font-weight:700; line-height:1.12; color:var(--dark); margin-bottom:18px; }
+    .sec-h em { font-style:italic; color:var(--sage-d); }
+    .sec-p { font-size:15px; color:var(--mid); line-height:1.85; margin-bottom:26px; }
+
+    .feat-list { display:flex; flex-direction:column; gap:12px; margin-bottom:32px; }
+    .feat { display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:var(--white); border-radius:12px; border:1px solid var(--ivory3); transition:border-color .4s,box-shadow .4s; }
+    .feat:hover { border-color:var(--sage); box-shadow:0 4px 16px rgba(143,166,126,.12); }
+    .feat-icon { font-size:20px; flex-shrink:0; }
+    .feat-t { font-size:14px; font-weight:500; color:var(--dark); margin-bottom:3px; }
+    .feat-s { font-size:12px; color:var(--light); line-height:1.5; }
+
+    /* ── PROMO ───────────────────────────────────── */
+    .promo { position:relative; min-height:65vh; display:flex; align-items:center; overflow:hidden; }
+    .promo-bg { position:absolute; inset:0; }
+    .promo-bg img { filter:brightness(.4) saturate(.6); }
+    .promo-ov { position:absolute; inset:0; background:linear-gradient(90deg,rgba(30,26,22,.94) 0%,rgba(30,26,22,.55) 55%,rgba(30,26,22,.1) 100%); }
+    .promo-c  { position:relative; z-index:2; padding:80px 64px; max-width:620px; }
+    .promo-ey { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+    .promo-line { width:24px; height:1px; background:var(--blush); }
+    .promo-ey span { font-size:10px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:var(--blush); }
+    .promo-h  { font-family:var(--serif); font-size:clamp(38px,5vw,66px); font-weight:700; line-height:1.08; color:var(--white); margin-bottom:16px; }
+    .promo-h em { font-style:italic; color:var(--blush); }
+    .promo-p  { font-size:16px; color:rgba(255,255,255,.75); line-height:1.8; margin-bottom:32px; max-width:440px; }
+    .promo-btns { display:flex; gap:14px; flex-wrap:wrap; }
+    .btn-blush { font-size:12px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--white); background:var(--blush-d); padding:15px 36px; border-radius:100px; transition:.4s; display:inline-block; }
+    .btn-blush:hover { background:var(--blush); transform:translateY(-2px); }
+    .btn-wout  { font-size:12px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--white); border:1.5px solid rgba(255,255,255,.4); padding:14px 36px; border-radius:100px; transition:.4s; display:inline-block; }
+    .btn-wout:hover  { border-color:var(--white); background:rgba(255,255,255,.08); }
+
+    /* ── DELIVERY ─────────────────────────────────── */
+    .delivery { padding:100px 64px; background:var(--ivory); display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+    .del-steps { display:flex; flex-direction:column; }
+    .del-step { display:flex; gap:20px; padding:24px 0; border-bottom:1px solid var(--ivory3); align-items:flex-start; transition:.4s; }
+    .del-step:last-child { border-bottom:none; }
+    .del-step:hover { padding-left:8px; }
+    .del-n { font-family:var(--serif); font-size:38px; font-weight:700; font-style:italic; color:var(--ivory3); line-height:1; flex-shrink:0; width:48px; transition:color .4s; }
+    .del-step:hover .del-n { color:var(--sage); }
+    .del-t  { font-size:15px; font-weight:600; color:var(--dark); margin-bottom:4px; }
+    .del-d  { font-size:13px; color:var(--mid); line-height:1.7; }
+    .del-photo { border-radius:24px; overflow:hidden; height:460px; position:relative; }
+    .del-photo img { width:100%; height:100%; object-fit:cover; }
+    .del-badge2 {
+      position:absolute; bottom:22px; left:22px; right:22px;
+      background:rgba(255,255,255,.95); border-radius:14px;
+      padding:14px 18px; display:flex; gap:12px; align-items:center;
+      box-shadow:0 8px 32px rgba(30,26,22,.09);
+    }
+    .del-b-icon { font-size:26px; }
+    .del-b-t { font-size:13px; font-weight:600; color:var(--dark); }
+    .del-b-s { font-size:11px; color:var(--light); }
+
+    /* ── REVIEWS ─────────────────────────────────── */
+    .reviews { padding:100px 64px; background:var(--ivory2); }
+    .rev-head { display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:end; margin-bottom:52px; }
+    .rev-h { font-family:var(--serif); font-size:clamp(32px,4vw,54px); font-weight:700; color:var(--dark); }
+    .rev-h em { font-style:italic; color:var(--sage-d); }
+    .rev-sub { font-size:15px; color:var(--mid); line-height:1.8; }
+    .rev-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .rev-card { background:var(--white); border-radius:20px; padding:28px; border:1px solid var(--ivory3); transition:transform .4s,box-shadow .4s,border-color .4s; position:relative; overflow:hidden; }
+    .rev-card::before { content:'\201C'; position:absolute; top:10px; right:18px; font-family:var(--serif); font-size:72px; color:var(--sage-p); line-height:1; }
+    .rev-card:hover { transform:translateY(-4px); box-shadow:0 16px 48px rgba(30,26,22,.08); border-color:var(--sage); }
+    .rev-stars { color:var(--sage-d); font-size:14px; letter-spacing:3px; margin-bottom:14px; }
+    .rev-text  { font-size:14px; font-style:italic; color:var(--mid); line-height:1.8; margin-bottom:20px; }
+    .rev-div   { height:1px; background:var(--ivory3); margin-bottom:16px; }
+    .rev-auth  { display:flex; align-items:center; gap:12px; }
+    .rev-av    { width:40px; height:40px; border-radius:50%; overflow:hidden; flex-shrink:0; border:2px solid var(--sage-p); }
+    .rev-av img { width:100%; height:100%; object-fit:cover; }
+    .rev-name  { font-size:14px; font-weight:600; color:var(--dark); }
+    .rev-det   { font-size:11px; color:var(--light); letter-spacing:1px; }
+
+    /* ── CTA ─────────────────────────────────────── */
+    .cta {
+      background:var(--sage-d); padding:100px 64px;
+      display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center;
+      position:relative; overflow:hidden;
+    }
+    .cta::before,.cta::after { content:''; position:absolute; border-radius:50%; background:rgba(255,255,255,.05); }
+    .cta::before { width:480px; height:480px; top:-150px; right:-80px; }
+    .cta::after  { width:280px; height:280px; bottom:-90px; left:22%; }
+    .cta-l { position:relative; z-index:1; }
+    .cta-h { font-family:var(--serif); font-size:clamp(32px,4vw,54px); font-weight:700; line-height:1.1; color:var(--white); margin-bottom:14px; }
+    .cta-h em { font-style:italic; color:rgba(255,255,255,.65); }
+    .cta-sub { font-size:16px; color:rgba(255,255,255,.75); line-height:1.7; }
+    .cta-r { position:relative; z-index:1; display:flex; flex-direction:column; gap:14px; align-items:flex-start; }
+    .btn-white { font-size:12px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--sage-d); background:var(--white); padding:15px 36px; border-radius:100px; transition:.4s; display:inline-block; }
+    .btn-white:hover { background:var(--ivory); transform:translateY(-2px); }
+    .cta-rows { display:flex; flex-direction:column; gap:10px; margin-top:4px; }
+    .cta-row  { display:flex; align-items:center; gap:10px; font-size:14px; color:rgba(255,255,255,.8); }
+    .cta-row strong { color:var(--white); }
+
+    /* ── FOOTER ──────────────────────────────────── */
+    footer { background:var(--dark); padding:60px 64px 36px; display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:40px; }
+    .f-logo { font-family:var(--serif); font-size:22px; letter-spacing:6px; text-transform:uppercase; color:var(--white); display:block; margin-bottom:12px; }
+    .f-logo span { color:var(--sage); }
+    .f-tag  { font-size:13px; color:rgba(255,255,255,.4); line-height:1.7; margin-bottom:22px; }
+    .f-soc  { display:flex; gap:10px; }
+    .f-soc a { width:36px; height:36px; border-radius:8px; border:1px solid rgba(255,255,255,.1); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.5); font-size:12px; font-weight:700; transition:.4s; }
+    .f-soc a:hover { background:var(--sage-d); border-color:var(--sage-d); color:var(--white); }
+    .f-h  { font-size:10px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.35); margin-bottom:16px; }
+    .f-links { list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .f-links a { font-size:13px; color:rgba(255,255,255,.6); transition:color .4s; }
+    .f-links a:hover { color:var(--sage); }
+    .f-bottom { background:var(--dark); padding:18px 64px; border-top:1px solid rgba(255,255,255,.06); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+    .f-copy { font-size:12px; color:rgba(255,255,255,.25); }
+
+    /* ── RESPONSIVE ──────────────────────────────── */
+    @media(max-width:1024px){
+      .nav,.nav.solid { padding:18px 40px; }
+      .hero-text { padding:100px 40px 60px 32px; }
+      .carousel-sec { padding:80px 0 80px 40px; }
+      .carousel-top,.car-dots { padding-right:40px; }
+      .car-track { padding-right:40px; }
+      .about,.delivery,.reviews,.cta { padding:80px 40px; }
+      .promo-c { padding:60px 40px; }
+      footer { padding:52px 40px 28px; }
+      .f-bottom { padding:16px 40px; }
+    }
+
+    @media(max-width:768px){
+      .nav,.nav.solid { padding:16px 24px; }
+      .nav-links,.nav-right { display:none; }
+      .burger { display:flex; }
+
+      /* hero */
+      .hero { grid-template-columns:1fr; min-height:auto; }
+      .hero-img { height:55vw; min-height:260px; order:1; }
+      .hero-img::after { background:linear-gradient(to top,var(--ivory) 0%,transparent 60%); }
+      .hero-text { order:2; padding:28px 24px 60px; }
+      .hero-float { bottom:20px; left:16px; }
+      .hero-stats { gap:20px; }
+
+      /* carousel */
+      .carousel-sec { padding:70px 0 70px 24px; }
+      .carousel-top { grid-template-columns:1fr; gap:20px; padding-right:24px; }
+      .car-track { padding-right:24px; }
+      .car-dots  { padding-right:24px; }
+      .car-card  { width:240px; }
+      .car-img   { height:280px; }
+
+      /* about */
+      .about { grid-template-columns:1fr; padding:70px 24px; gap:40px; }
+      .about::before { display:none; }
+      .about-imgs { height:320px; }
+
+      /* promo */
+      .promo-c { padding:60px 24px; }
+      .promo-ov { background:linear-gradient(180deg,rgba(30,26,22,.94) 60%,rgba(30,26,22,.55) 100%); }
+
+      /* delivery */
+      .delivery { grid-template-columns:1fr; padding:70px 24px; gap:40px; }
+      .del-photo { height:320px; }
+
+      /* reviews */
+      .reviews { padding:70px 24px; }
+      .rev-head { grid-template-columns:1fr; gap:16px; }
+      .rev-grid { grid-template-columns:1fr; }
+
+      /* cta */
+      .cta { grid-template-columns:1fr; padding:70px 24px; gap:36px; }
+
+      /* footer */
+      footer { grid-template-columns:1fr 1fr; padding:44px 24px 24px; gap:24px; }
+      .f-bottom { padding:14px 24px; flex-direction:column; gap:6px; }
+    }
+
+    @media(max-width:480px){
+      .hero-h,.hero-hi { font-size:38px; }
+      footer { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAVBAR ──────────────────────────────────── -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo">P<span>E</span>TAL</a>
+  <ul class="nav-links">
+    <li><a href="#catalogue">Каталог</a></li>
+    <li><a href="#about">О нас</a></li>
+    <li><a href="#delivery">Доставка</a></li>
+    <li><a href="#reviews">Отзывы</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="tel:+78121234567" class="nav-tel">+7 (812) 123-45-67</a>
+    <a href="#cta" class="nav-btn">Заказать</a>
+  </div>
+  <button class="burger" id="burger"><span></span><span></span><span></span></button>
+</nav>
+<div class="mob" id="mob">
+  <button class="mob-x" id="mobX">✕</button>
+  <a href="#catalogue" onclick="cM()">Каталог</a>
+  <a href="#about"     onclick="cM()">О нас</a>
+  <a href="#delivery"  onclick="cM()">Доставка</a>
+  <a href="#reviews"   onclick="cM()">Отзывы</a>
+  <a href="#cta"       onclick="cM()">Заказать</a>
+</div>
+
+<!-- ── HERO ──────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-img">
+    <img src="https://images.pexels.com/photos/33791908/pexels-photo-33791908.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Букет роз" loading="eager">
+    <div class="hero-float">
+      <div class="hero-float-icon">🌸</div>
+      <div>
+        <div class="hero-float-t">Свежие букеты ежедневно</div>
+        <div class="hero-float-s">Доставка за 2–3 часа по СПб</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-text">
+    <div class="hero-tag"><div class="hero-tag-line"></div><span>Цветочная студия · Санкт-Петербург</span></div>
+    <h1 class="hero-h">Букеты, которые</h1>
+    <span class="hero-hi">говорят сами за себя</span>
+    <p class="hero-p">Авторские букеты из свежесрезанных цветов. Упаковываем с вкусом, доставляем вовремя — каждый день с 9 до 22.</p>
+    <div class="hero-btns">
+      <a href="#catalogue" class="btn-sage">Смотреть каталог</a>
+      <a href="https://t.me/petal_spb" class="btn-out">✈ Telegram</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hs-n">600+</div><div class="hs-l">букетов в месяц</div></div>
+      <div><div class="hs-n">4.9★</div><div class="hs-l">рейтинг 2ГИС</div></div>
+      <div><div class="hs-n">5 лет</div><div class="hs-l">в Петербурге</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TICKER ────────────────────────────────────── -->
+<div class="ticker">
+  <div class="ticker-track">
+    <div class="ticker-item">Свежие цветы каждое утро</div>
+    <div class="ticker-item">Розы · Пионы · Тюльпаны · Хризантемы</div>
+    <div class="ticker-item">Авторская упаковка в подарок</div>
+    <div class="ticker-item">Доставка по всему Петербургу</div>
+    <div class="ticker-item">Открытка бесплатно</div>
+    <div class="ticker-item">Пн–Вс 9:00–22:00</div>
+    <div class="ticker-item">Свежие цветы каждое утро</div>
+    <div class="ticker-item">Розы · Пионы · Тюльпаны · Хризантемы</div>
+    <div class="ticker-item">Авторская упаковка в подарок</div>
+    <div class="ticker-item">Доставка по всему Петербургу</div>
+    <div class="ticker-item">Открытка бесплатно</div>
+    <div class="ticker-item">Пн–Вс 9:00–22:00</div>
+  </div>
+</div>
+
+<!-- ── CAROUSEL ───────────────────────────────────── -->
+<section class="carousel-sec" id="catalogue">
+  <div class="carousel-top">
+    <div>
+      <h2 class="car-title reveal">Наши<br><em>букеты</em></h2>
+    </div>
+    <div>
+      <p class="car-desc reveal d1">Собираем из цветов, которые привозят к нам каждое утро. Свежо, красиво, с душой.</p>
+      <div class="car-controls">
+        <button class="car-btn" id="carPrev">←</button>
+        <button class="car-btn" id="carNext">→</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="car-track-wrap">
+    <div class="car-track" id="carTrack">
+
+      <!-- 1 — woman holding large pink roses bouquet outdoors -->
+      <div class="car-card">
+        <div class="car-img">
+          <img src="https://images.pexels.com/photos/33791908/pexels-photo-33791908.jpeg?auto=compress&cs=tinysrgb&w=600" alt="25 розовых роз" loading="lazy">
+          <div class="car-badge">Хит</div>
+        </div>
+        <div class="car-body">
+          <div class="car-name">25 розовых роз</div>
+          <div class="car-sub">Импортные розы 60 см в авторской упаковке</div>
+          <div class="car-foot">
+            <div class="car-price">3 200 <sup>₽</sup></div>
+            <a href="#cta" class="car-order">→</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 — red roses wrapped in brown parchment -->
+      <div class="car-card">
+        <div class="car-img">
+          <img src="https://images.pexels.com/photos/12032362/pexels-photo-12032362.jpeg?auto=compress&cs=tinysrgb&w=600" alt="9 красных роз в крафте" loading="lazy">
+          <div class="car-badge dark">Классика</div>
+        </div>
+        <div class="car-body">
+          <div class="car-name">9 красных роз</div>
+          <div class="car-sub">Импортные розы 70 см в крафт-упаковке</div>
+          <div class="car-foot">
+            <div class="car-price">2 400 <sup>₽</sup></div>
+            <a href="#cta" class="car-order">→</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 — woman holding pink tulips -->
+      <div class="car-card">
+        <div class="car-img">
+          <img src="https://images.pexels.com/photos/1386604/pexels-photo-1386604.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Тюльпаны" loading="lazy">
+          <div class="car-badge pink">Весна</div>
+        </div>
+        <div class="car-body">
+          <div class="car-name">51 тюльпан</div>
+          <div class="car-sub">Нежные тюльпаны микс цветов</div>
+          <div class="car-foot">
+            <div class="car-price">2 100 <sup>₽</sup></div>
+            <a href="#cta" class="car-order">→</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 — vibrant bouquet roses + carnations in pink paper -->
+      <div class="car-card">
+        <div class="car-img">
+          <img src="https://images.pexels.com/photos/33961379/pexels-photo-33961379.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Сборный букет" loading="lazy">
+        </div>
+        <div class="car-body">
+          <div class="car-name">Сборный «Акварель»</div>
+          <div class="car-sub">Розы, ранункулюс и диантус в нежной упаковке</div>
+          <div class="car-foot">
+            <div class="car-price">2 800 <sup>₽</sup></div>
+            <a href="#cta" class="car-order">→</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 — person holding colorful wrapped bouquet -->
+      <div class="car-card">
+        <div class="car-img">
+          <img src="https://images.pexels.com/photos/9008416/pexels-photo-9008416.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Яркий микс-букет" loading="lazy">
+          <div class="car-badge pink">Яркий</div>
+        </div>
+        <div class="car-body">
+          <div class="car-name">Микс «Радость»</div>
+          <div class="car-sub">Ирисы, жёлтые розы, ромашки в подарочной упаковке</div>
+          <div class="car-foot">
+            <div class="car-price">2 500 <sup>₽</sup></div>
+            <a href="#cta" class="car-order">→</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 — woman holding bouquet wrapped in paper -->
+      <div class="car-card">
+        <div class="car-img">
+          <img src="https://images.pexels.com/photos/21283469/pexels-photo-21283469.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Букет в упаковке" loading="lazy">
+        </div>
+        <div class="car-body">
+          <div class="car-name">Авторский сюрприз</div>
+          <div class="car-sub">Сборный букет на усмотрение флориста — всегда особенный</div>
+          <div class="car-foot">
+            <div class="car-price">2 200 <sup>₽</sup></div>
+            <a href="#cta" class="car-order">→</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7 — white flowers in brown paper (chrysanthemums) -->
+      <div class="car-card">
+        <div class="car-img">
+          <img src="https://images.pexels.com/photos/17558430/pexels-photo-17558430.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Белые хризантемы" loading="lazy">
+        </div>
+        <div class="car-body">
+          <div class="car-name">Белые хризантемы</div>
+          <div class="car-sub">7 крупных хризантем в крафт-упаковке с лентой</div>
+          <div class="car-foot">
+            <div class="car-price">1 900 <sup>₽</sup></div>
+            <a href="#cta" class="car-order">→</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8 — woman holding roses bouquet behind back -->
+      <div class="car-card">
+        <div class="car-img">
+          <img src="https://images.pexels.com/photos/17444546/pexels-photo-17444546.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Букет роз за спиной" loading="lazy">
+          <div class="car-badge">Романтик</div>
+        </div>
+        <div class="car-body">
+          <div class="car-name">19 роз «Сюрприз»</div>
+          <div class="car-sub">Розы 60 см в фоамиране — идеально для признания</div>
+          <div class="car-foot">
+            <div class="car-price">2 600 <sup>₽</sup></div>
+            <a href="#cta" class="car-order">→</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9 — florist making bouquet in shop -->
+      <div class="car-card">
+        <div class="car-img">
+          <img src="https://images.pexels.com/photos/5410124/pexels-photo-5410124.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Флорист" loading="lazy">
+          <div class="car-badge dark">Премиум</div>
+        </div>
+        <div class="car-body">
+          <div class="car-name">55 роз «Грандиозо»</div>
+          <div class="car-sub">Пионовидные розы Кахала в фирменной упаковке</div>
+          <div class="car-foot">
+            <div class="car-price">7 200 <sup>₽</sup></div>
+            <a href="#cta" class="car-order">→</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10 — roses wrapped in kraft with violin still life -->
+      <div class="car-card">
+        <div class="car-img">
+          <img src="https://images.pexels.com/photos/18464431/pexels-photo-18464431.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Розы в крафте" loading="lazy">
+          <div class="car-badge pink">Подарок</div>
+        </div>
+        <div class="car-body">
+          <div class="car-name">«Итальянский вечер»</div>
+          <div class="car-sub">Красные розы в крафте — элегантный подарок для неё</div>
+          <div class="car-foot">
+            <div class="car-price">3 800 <sup>₽</sup></div>
+            <a href="#cta" class="car-order">→</a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /car-track -->
+  </div>
+
+  <div class="car-dots" id="carDots"></div>
+</section>
+
+<!-- ── ABOUT ───────────────────────────────────────── -->
+<section class="about" id="about">
+  <div class="about-imgs rl">
+    <div class="about-main">
+      <img src="https://images.pexels.com/photos/5409707/pexels-photo-5409707.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Флорист" loading="lazy">
+    </div>
+    <div class="about-sec">
+      <img src="https://images.pexels.com/photos/33961379/pexels-photo-33961379.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Букет" loading="lazy">
+    </div>
+    <div class="about-badge">
+      <div class="about-badge-n">5+</div>
+      <div class="about-badge-l">лет</div>
+    </div>
+  </div>
+  <div>
+    <div class="eyebrow reveal"><div class="eyebrow-line"></div><span>О студии</span></div>
+    <h2 class="sec-h reveal d1">Каждый букет —<br><em>это разговор</em></h2>
+    <p class="sec-p reveal d2">Мы работаем в Петербурге с 2019 года. Цветы привозим из Эквадора и местных теплиц каждое утро. Ни одного «вчерашнего» букета на витрине.</p>
+    <div class="feat-list reveal d3">
+      <div class="feat"><div class="feat-icon">🌿</div><div><div class="feat-t">Свежесрезанные цветы</div><div class="feat-s">Поставки ежедневно, никаких цветов второго дня.</div></div></div>
+      <div class="feat"><div class="feat-icon">🎀</div><div><div class="feat-t">Авторская упаковка</div><div class="feat-s">Крафт, шёлк, шляпные коробки — упакуем как подарок.</div></div></div>
+      <div class="feat"><div class="feat-icon">🛡</div><div><div class="feat-t">Гарантия свежести 5 дней</div><div class="feat-s">Завянут раньше — заменим бесплатно.</div></div></div>
+    </div>
+    <a href="#cta" class="btn-sage reveal d4">Сделать заказ</a>
+  </div>
+</section>
+
+<!-- ── PROMO ───────────────────────────────────────── -->
+<div class="promo">
+  <div class="promo-bg">
+    <img src="https://images.pexels.com/photos/21283469/pexels-photo-21283469.jpeg?auto=compress&cs=tinysrgb&w=1800" alt="Букет" loading="lazy">
+  </div>
+  <div class="promo-ov"></div>
+  <div class="promo-c">
+    <div class="promo-ey reveal"><div class="promo-line"></div><span>Индивидуальный заказ</span></div>
+    <h2 class="promo-h reveal d1">Не нашли нужный?<br><em>Создадим</em> для вас</h2>
+    <p class="promo-p reveal d2">Опишите повод, цветовую гамму и бюджет — флорист соберёт уникальный букет, которого нет ни у кого.</p>
+    <div class="promo-btns reveal d3">
+      <a href="https://t.me/petal_spb" class="btn-blush">✈ Написать флористу</a>
+      <a href="tel:+78121234567"        class="btn-wout">Позвонить</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── DELIVERY ───────────────────────────────────── -->
+<section class="delivery" id="delivery">
+  <div>
+    <div class="eyebrow reveal"><div class="eyebrow-line"></div><span>Как заказать</span></div>
+    <h2 class="sec-h reveal d1">4 шага до<br><em>готового букета</em></h2>
+    <p class="sec-p reveal d2">Оформите заказ за 5 минут — через 2–3 часа букет уже у получателя.</p>
+    <div class="del-steps reveal d3">
+      <div class="del-step"><div class="del-n">01</div><div><div class="del-t">Выберите букет или опишите желаемый</div><div class="del-d">Из каталога или напишите нам — подберём под бюджет и повод.</div></div></div>
+      <div class="del-step"><div class="del-n">02</div><div><div class="del-t">Укажите адрес и время доставки</div><div class="del-d">По всему Петербургу. Можно назначить точное время.</div></div></div>
+      <div class="del-step"><div class="del-n">03</div><div><div class="del-t">Оплатите удобным способом</div><div class="del-d">Карта, СБП, наличные. Пришлём фото букета до отправки.</div></div></div>
+      <div class="del-step"><div class="del-n">04</div><div><div class="del-t">Получите и порадуйте близкого</div><div class="del-d">Курьер доставит в фирменной упаковке. Бесплатно от 2 500 ₽.</div></div></div>
+    </div>
+  </div>
+  <div class="del-photo rr">
+    <img src="https://images.pexels.com/photos/12032362/pexels-photo-12032362.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Букет в упаковке" loading="lazy">
+    <div class="del-badge2">
+      <div class="del-b-icon">🚚</div>
+      <div>
+        <div class="del-b-t">Доставка за 2–3 часа</div>
+        <div class="del-b-s">Бесплатно от 2 500 ₽</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── REVIEWS ─────────────────────────────────────── -->
+<section class="reviews" id="reviews">
+  <div class="rev-head">
+    <h2 class="rev-h reveal">О нас говорят<br><em>клиенты</em></h2>
+    <p class="rev-sub reveal d1">Более 600 заказов в месяц и рейтинг 4.9 на 2ГИС — не просят, а потому что делаем своё дело хорошо.</p>
+  </div>
+  <div class="rev-grid">
+    <div class="rev-card reveal">
+      <div class="rev-stars">★★★★★</div>
+      <p class="rev-text">«Заказывала маме на юбилей. Букет просто фантастический — пышные пионы, нежная упаковка. Доставили строго в назначенное время. Мама была в слезах от радости!»</p>
+      <div class="rev-div"></div>
+      <div class="rev-auth">
+        <div class="rev-av"><img src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop" alt="Анна"></div>
+        <div><div class="rev-name">Анна Соколова</div><div class="rev-det">2ГИС · постоянный клиент</div></div>
+      </div>
+    </div>
+    <div class="rev-card reveal d1">
+      <div class="rev-stars">★★★★★</div>
+      <p class="rev-text">«Оформлял сюрприз для девушки. Флорист сама предложила идею по цветовой гамме — результат превзошёл всё, что я мог представить. Спасибо огромное!»</p>
+      <div class="rev-div"></div>
+      <div class="rev-auth">
+        <div class="rev-av"><img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop" alt="Михаил"></div>
+        <div><div class="rev-name">Михаил Дроздов</div><div class="rev-det">Google Maps · 1 год с нами</div></div>
+      </div>
+    </div>
+    <div class="rev-card reveal d2">
+      <div class="rev-stars">★★★★★</div>
+      <p class="rev-text">«Заказывали оформление на корпоратив — 30 букетов. Всё готово к 9 утра, цветы простояли 4 дня. Работали чётко, без нервов. Теперь только к вам!»</p>
+      <div class="rev-div"></div>
+      <div class="rev-auth">
+        <div class="rev-av"><img src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop" alt="Екатерина"></div>
+        <div><div class="rev-name">Екатерина Лебедева</div><div class="rev-det">Яндекс · корпоративный клиент</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ─────────────────────────────────────────── -->
+<section class="cta" id="cta">
+  <div class="cta-l">
+    <h2 class="cta-h reveal">Подарите радость<br><em>прямо сейчас</em></h2>
+    <p class="cta-sub reveal d1">Работаем ежедневно с 9:00 до 22:00.<br>Доставка по всему Санкт-Петербургу.</p>
+  </div>
+  <div class="cta-r reveal d2">
+    <a href="tel:+78121234567" class="btn-white">+7 (812) 123-45-67</a>
+    <a href="https://t.me/petal_spb" class="btn-wout">✈ Telegram</a>
+    <div class="cta-rows">
+      <div class="cta-row">🕐 <span>Ежедневно <strong>9:00–22:00</strong></span></div>
+      <div class="cta-row">🚚 <span>Доставка <strong>2–3 часа</strong>, бесплатно от 2500 ₽</span></div>
+      <div class="cta-row">📍 <span>СПб, <strong>Невский пр., 88</strong></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────── -->
+<footer>
+  <div>
+    <a href="#" class="f-logo">P<span>E</span>TAL</a>
+    <p class="f-tag">Авторские букеты в Санкт-Петербурге. Свежие цветы каждый день с 9 до 22.</p>
+    <div class="f-soc">
+      <a href="#">VK</a><a href="#">TG</a><a href="#">WA</a>
+    </div>
+  </div>
+  <div>
+    <div class="f-h">Каталог</div>
+    <ul class="f-links">
+      <li><a href="#">Розы</a></li>
+      <li><a href="#">Пионы</a></li>
+      <li><a href="#">Тюльпаны</a></li>
+      <li><a href="#">Хризантемы</a></li>
+      <li><a href="#">Сборные букеты</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="f-h">Поводы</div>
+    <ul class="f-links">
+      <li><a href="#">День рождения</a></li>
+      <li><a href="#">Свадьба</a></li>
+      <li><a href="#">8 марта</a></li>
+      <li><a href="#">Корпоратив</a></li>
+      <li><a href="#">Признание</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="f-h">Контакты</div>
+    <ul class="f-links">
+      <li><a href="tel:+78121234567">+7 (812) 123-45-67</a></li>
+      <li><a href="#">Telegram</a></li>
+      <li><a href="#">WhatsApp</a></li>
+      <li><a href="#">Невский пр., 88</a></li>
+      <li><a href="#">Пн–Вс 9:00–22:00</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="f-bottom">
+  <span class="f-copy">© 2024 PETAL. Цветочная студия, Санкт-Петербург.</span>
+  <span class="f-copy">Все права защищены.</span>
+</div>
+
+<!-- ── JS ─────────────────────────────────────────── -->
+<script>
+  // navbar
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('solid', scrollY > 60));
+
+  // mobile menu
+  document.getElementById('burger').onclick = () => document.getElementById('mob').classList.add('open');
+  document.getElementById('mobX').onclick   = () => document.getElementById('mob').classList.remove('open');
+  function cM(){ document.getElementById('mob').classList.remove('open'); }
+
+  // scroll reveal
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('on')), {threshold:.1});
+  document.querySelectorAll('.reveal,.rl,.rr').forEach(el => io.observe(el));
+
+  // ── CAROUSEL ────────────────────────────────────
+  const track  = document.getElementById('carTrack');
+  const dotsEl = document.getElementById('carDots');
+  const cards  = track.querySelectorAll('.car-card');
+  let cur = 0;
+
+  function getVisible(){
+    const w = window.innerWidth;
+    if(w < 480) return 1;
+    if(w < 768) return 1.2;
+    if(w < 1024) return 2.5;
+    return 3.5;
+  }
+
+  function buildDots(){
+    dotsEl.innerHTML = '';
+    const vis = Math.floor(getVisible());
+    const total = Math.max(1, cards.length - vis + 1);
+    for(let i=0;i<total;i++){
+      const d = document.createElement('div');
+      d.className = 'dot' + (i===cur?' active':'');
+      d.style.width = i===cur ? '32px' : '16px';
+      d.onclick = () => goTo(i);
+      dotsEl.appendChild(d);
+    }
+  }
+
+  function goTo(n){
+    const vis = Math.floor(getVisible());
+    const max = cards.length - vis;
+    cur = Math.max(0, Math.min(n, max));
+    const cardW = cards[0].offsetWidth + 20;
+    track.style.transform = `translateX(-${cur * cardW}px)`;
+    buildDots();
+  }
+
+  document.getElementById('carPrev').onclick = () => goTo(cur - 1);
+  document.getElementById('carNext').onclick = () => goTo(cur + 1);
+  window.addEventListener('resize', () => { cur = 0; goTo(0); });
+
+  buildDots();
+
+  // touch swipe
+  let tx=0;
+  track.addEventListener('touchstart', e => tx=e.touches[0].clientX, {passive:true});
+  track.addEventListener('touchend',   e => {
+    const dx = tx - e.changedTouches[0].clientX;
+    if(Math.abs(dx) > 50) goTo(dx > 0 ? cur+1 : cur-1);
+  });
+</script>
+</body>
+</html>
